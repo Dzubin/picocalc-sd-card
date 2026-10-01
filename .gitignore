@@ -1,0 +1,5 @@
+# Build folders (CMake/Ninja output)
+build-*/
+
+# Logs written by the test scripts
+*.log
