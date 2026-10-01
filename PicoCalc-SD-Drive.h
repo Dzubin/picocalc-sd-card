@@ -24,16 +24,17 @@
 
 #include "tusb.h"  /* USB descriptor length macros */
 #include "lcd.h"   /* the starter's LCD driver: RGB(), WIDTH, ROWS (by Blair Leduc) */
+#include "keyboard.h" /* the starter's keyboard driver: KEY_ESC (by Blair Leduc) */
 
 /* ---- 1. Version -------------------------------------------------------- */
 
 /* The one place the version number lives. It is shown on the PicoCalc's screen,
  * reported to the PC in the USB product revision, and is the version in
  * CHANGELOG.md. Bump it here when behaviour changes. */
-#define SD_DRIVE_VERSION        "V0.01A"
+#define SD_DRIVE_VERSION        "V0.02A"
 
 /* The same version without the leading V, for the 4 character USB revision field. */
-#define SD_DRIVE_USB_REVISION   "0.01"
+#define SD_DRIVE_USB_REVISION   "0.02"
 
 /* ---- 2. Drive and SD card settings ------------------------------------- */
 
@@ -89,6 +90,24 @@
 #define SD_REPLY_TRIES            16   /* bytes to look through for a command's answer */
 #define SD_CRC7_POLYNOMIAL        0x09 /* x^7 + x^3 + 1 without the top term */
 #define CSD_BYTES                 16   /* the card-specific data register */
+
+/* Leaving the program for the PicoCalc UF2 Loader (pelrun/uf2loader). The loader
+ * has no call for an app to use, but its own menu hands commands to its start-up
+ * code through the chip's watchdog scratch registers, which survive a watchdog
+ * reboot: scratch 0 holds a magic number, 1 the boot mode, 2 an argument. Asking
+ * for boot mode "SD" then rebooting makes the loader show its menu again. */
+#define LOADER_COMMAND_MAGIC        0xE98CC638u /* PICOCALC_BL_MAGIC in the loader's proginfo.h */
+#define LOADER_BOOT_MODE_SD         1           /* BOOT_SD: load the menu from the SD card */
+#define LOADER_SCRATCH_MAGIC        0
+#define LOADER_SCRATCH_MODE         1
+#define LOADER_SCRATCH_ARGUMENT     2
+
+/* Before rebooting, the USB connection is dropped and this long (ms) is given for
+ * the PC to notice, so Windows sees the drive removed instead of the bus resetting. */
+#define EXIT_USB_DISCONNECT_MS      100
+
+/* The watchdog reboot happens this many ms after it is requested. */
+#define EXIT_REBOOT_DELAY_MS        10
 
 /* ---- 3. USB identity and layout ---------------------------------------- */
 
@@ -168,11 +187,14 @@ enum
 #define UI_ROW_SPEED            13
 #define UI_ROW_CSD              15
 #define UI_ROW_CSD_STATUS       16
-#define UI_ROW_KEYS             27 /* three key reminder rows start here */
+#define UI_ROW_KEYS             27 /* the key reminder rows start here, one per key */
 
-/* Keys that act on the drive. */
+/* Keys that act on the drive. Q (either case) and Escape both leave the program. */
 #define UI_KEY_EJECT            'e'
 #define UI_KEY_WRITE_PROTECT    'w'
+#define UI_KEY_QUIT             'q'
+#define UI_KEY_ESCAPE           0x1B /* plain ASCII escape, in case a keyboard sends it */
+#define UI_KEY_ESCAPE_PICOCALC  KEY_ESC /* what the PicoCalc's keyboard sends (starter's keyboard.h) */
 #define UI_KEY_BOOTSEL          '~'
 
 /* Longest line the screen builds, in characters (the grid is 40 wide). */

@@ -34,6 +34,7 @@
 #include "pico/unique_id.h"
 #include "hardware/spi.h"
 #include "hardware/gpio.h"
+#include "hardware/watchdog.h"
 
 #include "keyboard.h"
 #include "sdcard.h"
@@ -47,6 +48,7 @@ static void usb_msc_task(void);
 static void ui_init(void);
 static void ui_update(void);
 static void handle_keys(void);
+static void exit_to_loader(void);
 static void drive_toggle_eject(void);
 static void drive_toggle_write_protect(void);
 
@@ -77,7 +79,26 @@ int main(void)
     }
 }
 
-/* The PicoCalc's own keys: eject, write protect, and reboot to BOOTSEL. */
+/* Leaves the program and hands the PicoCalc back to the UF2 Loader's menu. The
+ * USB connection is dropped first so the PC sees the drive go away cleanly, then
+ * the loader is asked for its menu (see LOADER_COMMAND_MAGIC in the header) and
+ * the chip is rebooted by the watchdog. If the program was flashed straight to the
+ * chip with no loader, nothing reads the request and it simply restarts. */
+static void exit_to_loader(void)
+{
+    tud_disconnect();
+    sleep_ms(EXIT_USB_DISCONNECT_MS);
+
+    watchdog_hw->scratch[LOADER_SCRATCH_MODE] = LOADER_BOOT_MODE_SD;
+    watchdog_hw->scratch[LOADER_SCRATCH_ARGUMENT] = 0;
+    watchdog_hw->scratch[LOADER_SCRATCH_MAGIC] = LOADER_COMMAND_MAGIC;
+    watchdog_reboot(0, 0, EXIT_REBOOT_DELAY_MS);
+
+    while (1)
+        tight_loop_contents(); /* the reboot comes in a few milliseconds */
+}
+
+/* The PicoCalc's own keys: eject, write protect, quit, and reboot to BOOTSEL. */
 static void handle_keys(void)
 {
     while (keyboard_key_available())
@@ -86,6 +107,8 @@ static void handle_keys(void)
 
         if (key == UI_KEY_BOOTSEL)
             reset_usb_boot(0, 0); /* does not return */
+        else if (tolower(key) == UI_KEY_QUIT || key == UI_KEY_ESCAPE || key == UI_KEY_ESCAPE_PICOCALC)
+            exit_to_loader(); /* does not return */
         else if (tolower(key) == UI_KEY_EJECT)
             drive_toggle_eject();
         else if (tolower(key) == UI_KEY_WRITE_PROTECT)
@@ -1097,9 +1120,10 @@ static void ui_update(void)
         ui_show_row(UI_ROW_CSD_STATUS, media_csd_was_checked ? UI_COLOR_GOOD : UI_COLOR_BAD, line);
     }
 
-    ui_show_row(UI_ROW_KEYS, UI_COLOR_LABEL, "E  eject / mount again");
-    ui_show_row(UI_ROW_KEYS + 1, UI_COLOR_LABEL, "W  write protect on / off");
-    ui_show_row(UI_ROW_KEYS + 2, UI_COLOR_LABEL, "~  reboot to BOOTSEL (flash new .uf2)");
+    ui_show_row(UI_ROW_KEYS, UI_COLOR_LABEL, "E      eject / mount");
+    ui_show_row(UI_ROW_KEYS + 1, UI_COLOR_LABEL, "W      write protect");
+    ui_show_row(UI_ROW_KEYS + 2, UI_COLOR_LABEL, "Q/Esc  quit to loader");
+    ui_show_row(UI_ROW_KEYS + 3, UI_COLOR_LABEL, "~      BOOTSEL (flash .uf2)");
 }
 
 /* Starts the LCD and draws the screen. Call once at startup. */

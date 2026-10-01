@@ -4,6 +4,13 @@ All notable changes to PicoCalc-SD-Drive.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/);
 the version here matches `SD_DRIVE_VERSION` in `PicoCalc-SD-Drive.h`.
 
+## [0.02A] - 2026-10-01
+
+- **Q**, **q** and **Esc** quit the program and return to the PicoCalc UF2 Loader's menu: the
+  USB connection is dropped, the loader is asked for its menu through the watchdog scratch
+  registers, and the chip is rebooted.
+- The main screen lists the keys in short form (E, W, Q/Esc, ~).
+
 ## [0.01A] - 2026-10-01
 
 First version: the PicoCalc appears on a PC as a USB drive backed by its SD card,

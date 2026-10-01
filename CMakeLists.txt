@@ -80,6 +80,7 @@ target_link_libraries(PicoCalc-SD-Drive
     hardware_i2c
     hardware_gpio
     hardware_irq
+    hardware_watchdog
     tinyusb_device
 )
 
