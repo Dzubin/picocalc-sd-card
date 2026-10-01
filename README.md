@@ -172,7 +172,7 @@ work, also MIT licensed, with its own `LICENSE` file inside that folder.
 
 ## Status
 
-Version V0.02A adds the Q / Esc exit to the UF2 Loader and the key list on the screen; it builds for both chips, and Q returning to the UF2 Loader's menu was tried on an RP2040 PicoCalc (not yet on an RP2350). The tests below were run on V0.01A (the copying code is unchanged).
+Version V0.02A adds the Q / Esc exit to the UF2 Loader and the key list on the screen; it builds for both chips, and Q returning to the UF2 Loader's menu was tried on both an RP2040 and an RP2350 PicoCalc. The tests below were run on V0.01A (the copying code is unchanged).
 
 Version V0.01A, built and tested on both the RP2350 and the RP2040 PicoCalc (2026-09-30 to 2026-10-01). The PC sees a USB drive with the right card size, files copy both ways, and eject, write protect and card removal work.
 
