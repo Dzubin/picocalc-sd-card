@@ -3,7 +3,7 @@
 # Makes the PicoCalc look like a USB drive to a PC, using the PicoCalc's SD card
 # as the disc. Builds one firmware, named with the chip:
 #
-#   PicoCalc-SD-Drive-RP2040.uf2 / PicoCalc-SD-Drive-RP2350.uf2
+#   SD-Drive-RP2040.uf2 / SD-Drive-RP2350.uf2
 #
 # copied to the top-level folder so the two builds can sit side by side.
 # The picocalc-text-starter drivers (by Blair Leduc) are vendored, read-only, in
@@ -93,7 +93,7 @@ elseif(PICO_PLATFORM MATCHES "^rp2350")
 else()
     set(CHIP_NAME ${PICO_PLATFORM})
 endif()
-set_target_properties(PicoCalc-SD-Drive PROPERTIES OUTPUT_NAME PicoCalc-SD-Drive-${CHIP_NAME})
+set_target_properties(PicoCalc-SD-Drive PROPERTIES OUTPUT_NAME SD-Drive-${CHIP_NAME})
 
 pico_add_extra_outputs(PicoCalc-SD-Drive)
 

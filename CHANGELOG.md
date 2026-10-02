@@ -4,6 +4,11 @@ All notable changes to PicoCalc-SD-Drive.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com/);
 the version here matches `SD_DRIVE_VERSION` in `PicoCalc-SD-Drive.h`.
 
+## [Unreleased]
+
+- Build outputs are named without the `picocalc-` prefix: `SD-Drive-RP2040.uf2` and
+  `SD-Drive-RP2350.uf2` (the chip at the end already says what they are for).
+
 ## [0.02A] - 2026-10-01
 
 - **Q**, **q** and **Esc** quit the program and return to the PicoCalc UF2 Loader's menu: the

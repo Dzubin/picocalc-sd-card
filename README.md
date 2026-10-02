@@ -109,7 +109,7 @@ Pick the board with `-DPICO_BOARD=pico` (RP2040) or `-DPICO_BOARD=pico2` (RP2350
     cmake -B build-rp2350 -G Ninja -DPICO_BOARD=pico2
     ninja -C build-rp2350
 
-Output: `PicoCalc-SD-Drive-<chip>.uf2` (`<chip>` is `RP2040` or `RP2350`), also copied
+Output: `SD-Drive-<chip>.uf2` (`<chip>` is `RP2040` or `RP2350`), also copied
 to the top-level folder. Flash it by copying it to the `RPI-RP2` / `RP2350` drive: hold
 BOOTSEL on power-up, or press `~` (Shift + backtick) on the PicoCalc while this
 firmware is running.
