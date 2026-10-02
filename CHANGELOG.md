@@ -6,6 +6,8 @@ the version here matches `SD_DRIVE_VERSION` in `PicoCalc-SD-Drive.h`.
 
 ## [Unreleased]
 
+## [0.02B] - 2026-10-02
+
 - Build outputs are named without the `picocalc-` prefix: `SD-Drive-RP2040.uf2` and
   `SD-Drive-RP2350.uf2` (the chip at the end already says what they are for).
 

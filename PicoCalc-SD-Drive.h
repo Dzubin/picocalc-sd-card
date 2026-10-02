@@ -31,7 +31,7 @@
 /* The one place the version number lives. It is shown on the PicoCalc's screen,
  * reported to the PC in the USB product revision, and is the version in
  * CHANGELOG.md. Bump it here when behaviour changes. */
-#define SD_DRIVE_VERSION        "V0.02A"
+#define SD_DRIVE_VERSION        "V0.02B"
 
 /* The same version without the leading V, for the 4 character USB revision field. */
 #define SD_DRIVE_USB_REVISION   "0.02"
