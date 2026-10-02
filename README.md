@@ -168,7 +168,9 @@ once the card is put back in. Delete `sdtest2` from the card when you are done.
 ## License
 
 MIT, see [LICENSE](LICENSE). The vendored `picocalc-text-starter-main/` is Blair Leduc's
-work, also MIT licensed, with its own `LICENSE` file inside that folder.
+work, also MIT licensed, with its own `LICENSE` file inside that folder. It is unchanged
+except for one small fix in `drivers/fat32.c`: `get_next_free_cluster()` now advances
+its search hint, so a long sequential write to the SD card does not look hung.
 
 ## Status
 
